@@ -27,7 +27,7 @@ export default {
         redirect: 'follow'
       };
 
-      fetch("http://online.alif", requestOptions)
+      fetch("http://credit-api.test/index.php", requestOptions)
           .then(response => response.json())
           .then(result => {
             if (!Array.isArray(result) && result.error) {

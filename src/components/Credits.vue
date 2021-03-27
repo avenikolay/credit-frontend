@@ -12,7 +12,6 @@
       </li>
       <button @click="logout()">Выйти</button>
     </ul>
-
       <template v-if=" tab === 'next'">
         <h1>Кредиты</h1>
         <hr />
@@ -28,7 +27,6 @@
         <h2>Все кредиты</h2>
         <CreditTable :credits="actualCredits" />
       </template>
-
   </div>
 </template>
 
@@ -36,7 +34,8 @@
 import CreditTable from "@/components/CreditTable";
 import dayjs from 'dayjs'
 const today = Number(dayjs().format('D'));
-const endOfMonth = dayjs().endOf('month').subtract(1, 'day').format('YYYY-MM-DD');
+//const endOfMonth = dayjs().endOf('month').subtract(1, 'day').format('YYYY-MM-DD');
+const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
 const periodDate = (date) => new Date(date).getTime();
 const sortByDate = (a, b) => {
   return (new Date(a.next_payment_date).getTime() - new Date(b.next_payment_date).getTime())
@@ -61,7 +60,7 @@ export default {
   },
   data() {
     return {
-      tab: 'all'
+      tab: 'next'
     }
   },
   methods: {
@@ -79,7 +78,7 @@ export default {
     },
     currentPeriod() {
       let end = today < 15 ? dayjs().add(14 - today, 'day').format('YYYY-MM-DD') : endOfMonth;
-      return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() < periodDate(end)).sort(sortByDate)
+      return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() <  periodDate(end)).sort(sortByDate)
     },
     nextPeriodCredits() {
       let start = today < 15 ? dayjs().add(15 - today, 'day').format('YYYY-MM-DD') : endOfMonth;

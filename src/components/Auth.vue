@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     auth() {
-      fetch('http://online.alif/', {
+      fetch('http://credit-api.test/index.php', {
         method: 'POST',
         body: JSON.stringify({
           login: this.email,

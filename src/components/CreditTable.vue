@@ -11,7 +11,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr :key="credit.id" v-for="(credit, index) in sortedBy">
+      <tr :key="credit.id" v-for="(credit, index) in credits">
         <td>{{index + 1}}</td>
         <td>{{ credit.number }}</td>
         <td>{{ credit.annuity_actual_graceful }}</td>
@@ -21,9 +21,9 @@
       </tbody>
       <tfoot>
       <tr>
-        <th>Всего:</th>
+        <th colspan="2">Всего:</th>
         <th>{{ sum }}</th>
-        <th>{{ totalSum }}</th>
+        <th colspan="2">{{ totalSum }}</th>
       </tr>
       </tfoot>
 
