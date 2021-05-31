@@ -18,7 +18,7 @@
         <div>Общая сумма: {{totalSum}} сомони</div>
         <hr />
         <h2>Нужно погасить в ближайшее время:</h2>
-        <CreditTable :credits="currentPeriod" />
+        <CreditTable :credits="currentPeriodCredits" />
         <hr>
         <h2>Сумма погашений на следующий зарплатный период:</h2>
         <CreditTable :credits="nextPeriodCredits" />
@@ -36,6 +36,7 @@ import dayjs from 'dayjs'
 const today = Number(dayjs().format('D'));
 //const endOfMonth = dayjs().endOf('month').subtract(1, 'day').format('YYYY-MM-DD');
 const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
+const latestDayOfMonth = dayjs().endOf('month').get('date');
 const periodDate = (date) => new Date(date).getTime();
 const sortByDate = (a, b) => {
   return (new Date(a.next_payment_date).getTime() - new Date(b.next_payment_date).getTime())
@@ -71,18 +72,27 @@ export default {
   },
   computed: {
     actualCredits() {
+      // return this.credits.length ? this.credits.filter(p => p.next_payment_date !== null) : [];
       return this.credits.length ? this.credits.filter(p => p.next_payment_date !== null) : [];
+    },
+    endDateForCurrentPeriod() {
+      if (today < 15) {
+         return dayjs().add(15 - today, 'day').format('YYYY-MM-DD')
+      } else if (today > 15  && today < latestDayOfMonth) {
+        return endOfMonth;
+      }
+      return  dayjs().endOf('month').add('15', 'day').format('YYYY-MM-DD')
     },
     totalSum() {
       return this.actualCredits.reduce((acc, curr) => Number((acc + parseFloat(curr.termination_amount)).toFixed(2)), 0)
     },
-    currentPeriod() {
-      let end = today < 15 ? dayjs().add(14 - today, 'day').format('YYYY-MM-DD') : endOfMonth;
-      return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() <  periodDate(end)).sort(sortByDate)
+    currentPeriodCredits() {
+      return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() <  periodDate(this.endDateForCurrentPeriod)).sort(sortByDate)
     },
     nextPeriodCredits() {
-      let start = today < 15 ? dayjs().add(15 - today, 'day').format('YYYY-MM-DD') : endOfMonth;
-      let end = today < 15 ? endOfMonth : dayjs().endOf('month').add(14, 'day').format('YYYY-MM-DD');
+      const start = dayjs(this.endDateForCurrentPeriod).add(1, 'day').format('YYYY-MM-DD');
+      const separator = dayjs(this.endDateForCurrentPeriod).get('date')
+      const end = separator === 15 ? dayjs(start).endOf('month').format('YYYY-MM-DD') : dayjs(this.endDateForCurrentPeriod).add(14, 'day').format('YYYY-MM-DD');
       return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() >= periodDate(start) && new Date(p.next_payment_date).getTime() < periodDate(end)).sort(sortByDate)
     }
   }

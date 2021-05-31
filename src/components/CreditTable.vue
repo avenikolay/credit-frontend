@@ -11,7 +11,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr :key="credit.id" v-for="(credit, index) in credits">
+      <tr :key="credit.id" v-for="(credit, index) in sortedBy">
         <td>{{index + 1}}</td>
         <td>{{ credit.number }}</td>
         <td>{{ credit.annuity_actual_graceful }}</td>
@@ -34,8 +34,13 @@
 
 <script>
 import dayjs from 'dayjs'
+// eslint-disable-next-line no-unused-vars
 const sortByAmountSum = (a, b) => {
   return b.termination_amount - a.termination_amount
+}
+// eslint-disable-next-line no-unused-vars
+const sortByDate = (a, b) => {
+  return (new Date(a.next_payment_date).getTime() - new Date(b.next_payment_date).getTime())
 }
 export default {
   props: {
@@ -43,13 +48,13 @@ export default {
   },
   computed: {
     sum() {
-      return this.credits.reduce((acc, curr) => Number((acc + parseFloat(curr.annuity_actual_graceful)).toFixed(2)), 0)
+      return this.credits.reduce((acc, curr) => Number((acc + parseFloat(curr.annuity_actual_graceful || 0)).toFixed(2)), 0)
     },
     totalSum() {
       return this.credits.reduce((acc, curr) => Number((acc + parseFloat(curr.termination_amount)).toFixed(2)), 0)
     },
     sortedBy() {
-      return [...this.credits].sort(sortByAmountSum)
+      return [...this.credits].sort(sortByDate)
     }
   },
   methods: {
