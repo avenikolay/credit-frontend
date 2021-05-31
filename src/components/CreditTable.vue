@@ -54,7 +54,8 @@ export default {
       return this.credits.reduce((acc, curr) => Number((acc + parseFloat(curr.termination_amount)).toFixed(2)), 0)
     },
     sortedBy() {
-      return [...this.credits].sort(sortByDate)
+      //return [...this.credits].sort(sortByDate)
+      return this.credits
     }
   },
   methods: {

@@ -73,7 +73,7 @@ export default {
   computed: {
     actualCredits() {
       // return this.credits.length ? this.credits.filter(p => p.next_payment_date !== null) : [];
-      return this.credits.length ? this.credits.filter(p => p.next_payment_date !== null) : [];
+      return this.credits.length ? this.credits.filter(p => p.termination_amount !== "0.00") : [];
     },
     endDateForCurrentPeriod() {
       if (today < 15) {
