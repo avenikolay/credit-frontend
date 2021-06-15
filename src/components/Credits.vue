@@ -78,7 +78,7 @@ export default {
     endDateForCurrentPeriod() {
       if (today < 15) {
          return dayjs().add(15 - today, 'day').format('YYYY-MM-DD')
-      } else if (today > 15  && today < latestDayOfMonth) {
+      } else if (today >= 15  && today < latestDayOfMonth) {
         return endOfMonth;
       }
       return  dayjs().endOf('month').add('15', 'day').format('YYYY-MM-DD')
