@@ -57,7 +57,8 @@ const sortByActual = (a, b) => {
 export default {
   data() {
     return {
-      sortBy: null,
+      //sortBy: null,
+      sortBy: 'actual',
       direction: 'ask'
     }
   },
