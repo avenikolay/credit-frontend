@@ -24,9 +24,9 @@
       <tr :key="credit.id" v-for="(credit, index) in orderedBy">
         <td>{{ index + 1 }}</td>
         <td>{{ credit.number }}</td>
-        <td>{{ credit.annuity_actual_graceful }}</td>
-        <td>{{ credit.termination_amount }}</td>
-        <td>{{ formatDate(credit.next_payment_date) }}</td>
+        <td>{{ credit['annuity_actual_graceful'] }} {{credit['currency']}}</td>
+        <td>{{ credit['termination_amount'] }}  {{credit['currency']}}</td>
+        <td>{{ formatDate(credit['next_payment_date']) }}</td>
       </tr>
       </tbody>
       <tfoot>
@@ -58,8 +58,8 @@ export default {
   data() {
     return {
       //sortBy: null,
-      sortBy: 'actual',
-      direction: 'ask'
+      sortBy: 'date',
+      direction: 'desc'
     }
   },
   props: {
@@ -67,10 +67,16 @@ export default {
   },
   computed: {
     sum() {
-      return this.credits.reduce((acc, curr) => Number((acc + parseFloat(curr.annuity_actual_graceful || 0)).toFixed(2)), 0)
+      const helper = (acc, curr) => Number((acc + parseFloat(curr['annuity_actual_graceful'] || 0)).toFixed(2));
+      const usd = this.credits.filter(credit => credit.currency === 'USD');
+      const tjs = this.credits.filter(credit => credit.currency === 'TJS');
+      return `${tjs.reduce(helper, 0)} TJS, ${usd.reduce(helper, 0)} USD`;
     },
     totalSum() {
-      return this.credits.reduce((acc, curr) => Number((acc + parseFloat(curr.termination_amount)).toFixed(2)), 0)
+      const helper = (acc, curr) => Number((acc + parseFloat(curr['termination_amount'])).toFixed(2));
+      const usd = this.credits.filter(credit => credit.currency === 'USD');
+      const tjs = this.credits.filter(credit => credit.currency === 'TJS');
+      return `${tjs.reduce(helper, 0)} TJS, ${usd.reduce(helper, 0)} USD`;
     },
     sortedBy() {
       if (this.sortBy === 'amount') {

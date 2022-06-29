@@ -39,11 +39,11 @@ const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
 const latestDayOfMonth = dayjs().endOf('month').get('date');
 const periodDate = (date) => new Date(date).getTime();
 const sortByDate = (a, b) => {
-  return (new Date(a.next_payment_date).getTime() - new Date(b.next_payment_date).getTime())
+  return (new Date(a['next_payment_date']).getTime() - new Date(b['next_payment_date']).getTime())
 }
 // eslint-disable-next-line no-unused-vars
 const sortBySum = (a, b) => {
-  return a.annuity_actual_graceful - b.annuity_actual_graceful
+  return a['annuity_actual_graceful'] - b['annuity_actual_graceful']
 }
 
 export default {
@@ -73,7 +73,7 @@ export default {
   computed: {
     actualCredits() {
       // return this.credits.length ? this.credits.filter(p => p.next_payment_date !== null) : [];
-      return this.credits.length ? this.credits.filter(p => p.termination_amount !== "0.00" && p.termination_amount !== 0 && p.next_payment_date !== null) : [];
+      return this.credits.length ? this.credits.filter(p => p['termination_amount'] !== "0.00" && p['termination_amount'] !== 0 && p['next_payment_date'] !== null) : [];
     },
     endDateForCurrentPeriod() {
       if (today < 15) {
@@ -84,16 +84,16 @@ export default {
       return  dayjs().endOf('month').add('15', 'day').format('YYYY-MM-DD')
     },
     totalSum() {
-      return this.actualCredits.reduce((acc, curr) => Number((acc + parseFloat(curr.termination_amount)).toFixed(2)), 0)
+      return this.actualCredits.reduce((acc, curr) => Number((acc + parseFloat(curr['termination_amount'])).toFixed(2)), 0)
     },
     currentPeriodCredits() {
-      return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() <  periodDate(this.endDateForCurrentPeriod)).sort(sortByDate)
+      return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() <  periodDate(this.endDateForCurrentPeriod)).sort(sortByDate)
     },
     nextPeriodCredits() {
       const start = dayjs(this.endDateForCurrentPeriod).add(1, 'day').format('YYYY-MM-DD');
       const separator = dayjs(this.endDateForCurrentPeriod).get('date')
       const end = separator === 15 ? dayjs(start).endOf('month').format('YYYY-MM-DD') : dayjs(this.endDateForCurrentPeriod).add(14, 'day').format('YYYY-MM-DD');
-      return this.actualCredits.filter(p => new Date(p.next_payment_date).getTime() >= periodDate(start) && new Date(p.next_payment_date).getTime() < periodDate(end)).sort(sortByDate)
+      return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() >= periodDate(start) && new Date(p['next_payment_date']).getTime() < periodDate(end)).sort(sortByDate)
     }
   }
 }

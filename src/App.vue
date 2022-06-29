@@ -55,8 +55,6 @@ export default {
     if (!this.authRequire) {
       this.getMyCredits();
     }
-
-
   }
 }
 </script>
