@@ -1,6 +1,8 @@
 <template>
   <div v-show="loading" class="loader">
-    <div class="lds-ripple"><div></div><div></div></div>
+    <div class="lds-ripple">
+      <div></div>
+    </div>
   </div>
   <div class="container pt-4">
     <ul class="nav nav-justified  nav-tabs">
@@ -84,7 +86,10 @@ export default {
       return  dayjs().endOf('month').add('15', 'day').format('YYYY-MM-DD')
     },
     totalSum() {
-      return this.actualCredits.reduce((acc, curr) => Number((acc + parseFloat(curr['termination_amount'])).toFixed(2)), 0)
+      const helper = (acc, curr) => Number((acc + parseFloat(curr['termination_amount'])).toFixed(2));
+      const usd = this.actualCredits.filter(credit => credit.currency === 'USD');
+      const tjs = this.actualCredits.filter(credit => credit.currency === 'TJS');
+      return `${tjs.reduce(helper, 0)} TJS, ${usd.reduce(helper, 0)} USD`;
     },
     currentPeriodCredits() {
       return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() <  periodDate(this.endDateForCurrentPeriod)).sort(sortByDate)
