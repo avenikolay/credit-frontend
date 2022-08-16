@@ -46,13 +46,13 @@
 import dayjs from 'dayjs'
 
 const sortByAmountSum = (a, b) => {
-  return b.termination_amount - a.termination_amount
+  return b['termination_amount'] - a['termination_amount']
 }
 const sortByDate = (a, b) => {
-  return (new Date(a.next_payment_date).getTime() - new Date(b.next_payment_date).getTime())
+  return (new Date(a['next_payment_date']).getTime() - new Date(b['next_payment_date']).getTime())
 }
 const sortByActual = (a, b) => {
-  return b.annuity_actual_graceful - a.annuity_actual_graceful
+  return b['annuity_actual_graceful'] - a['annuity_actual_graceful']
 }
 export default {
   data() {
