@@ -24,7 +24,7 @@
       <tr :key="credit.id" v-for="(credit, index) in orderedBy">
         <td>{{ index + 1 }}</td>
         <td>{{ credit.number }}</td>
-        <td>{{ credit['annuity_actual_graceful'] }} {{credit['currency']}}</td>
+        <td>{{ credit['annuity_actual_graceful'] }} {{credit['currency']}} {{credit['currency'] === 'USD' ? convertToSomoni(credit['annuity_actual_graceful']) : ''}}</td>
         <td>{{ credit['termination_amount'] }}  {{credit['currency']}}</td>
         <td>{{ formatDate(credit['next_payment_date']) }}</td>
       </tr>
@@ -64,6 +64,7 @@ export default {
   },
   props: {
     credits: {type: Array},
+    usdSellValue: Number
   },
   computed: {
     sum() {
@@ -98,6 +99,9 @@ export default {
     }
   },
   methods: {
+    convertToSomoni(value) {
+      return `(${(value * this.usdSellValue).toFixed(2)} сомони)`
+    },
     formatDate(date) {
       return dayjs(date, 'YYYY-DD-MM').format('DD.MM.YYYY')
     }

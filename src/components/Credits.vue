@@ -4,7 +4,7 @@
       <div></div>
     </div>
   </div>
-  <div class="container pt-4">
+  <div v-if="!loading" class="container pt-4">
     <ul class="nav nav-justified  nav-tabs">
       <li class="nav-item">
         <a @click="tab = 'next'" :class="{'active': tab === 'next'}" class="nav-link " aria-current="page" href="#">Актуальное</a>
@@ -17,17 +17,17 @@
       <template v-if=" tab === 'next'">
         <h1>Кредиты</h1>
         <hr />
-        <div>Общая сумма: {{totalSum}} сомони</div>
+        <div>Общая сумма: {{totalSum}}</div>
         <hr />
         <h2>Нужно погасить в ближайшее время:</h2>
-        <CreditTable :credits="currentPeriodCredits" />
+        <CreditTable :usdSellValue="usdSellValue" :credits="currentPeriodCredits" />
         <hr>
         <h2>Сумма погашений на следующий зарплатный период:</h2>
-        <CreditTable :credits="nextPeriodCredits" />
+        <CreditTable :usdSellValue="usdSellValue" :credits="nextPeriodCredits" />
       </template>
       <template v-if=" tab === 'all'">
         <h2>Все кредиты</h2>
-        <CreditTable :credits="actualCredits" />
+        <CreditTable  :usdSellValue="usdSellValue" :credits="actualCredits" />
       </template>
   </div>
 </template>
@@ -59,7 +59,8 @@ export default {
     loading: {
       type: Boolean,
       default: true
-    }
+    },
+    usdSellValue: Number
   },
   data() {
     return {
@@ -89,7 +90,7 @@ export default {
       const helper = (acc, curr) => Number((acc + parseFloat(curr['termination_amount'])).toFixed(2));
       const usd = this.actualCredits.filter(credit => credit.currency === 'USD');
       const tjs = this.actualCredits.filter(credit => credit.currency === 'TJS');
-      return `${tjs.reduce(helper, 0)} TJS, ${usd.reduce(helper, 0)} USD`;
+      return `${tjs.reduce(helper, 0)} TJS, ${(usd.reduce(helper, 0) * this.usdSellValue).toFixed(2)} TJS (долларовый)`;
     },
     currentPeriodCredits() {
       return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() <  periodDate(this.endDateForCurrentPeriod)).sort(sortByDate)
