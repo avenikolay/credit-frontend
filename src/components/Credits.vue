@@ -96,10 +96,10 @@ export default {
       return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() <  periodDate(this.endDateForCurrentPeriod)).sort(sortByDate)
     },
     nextPeriodCredits() {
-      const start = dayjs(this.endDateForCurrentPeriod).add(1, 'day').format('YYYY-MM-DD');
+      const start = dayjs(this.endDateForCurrentPeriod).format('YYYY-MM-DD');
       const separator = dayjs(this.endDateForCurrentPeriod).get('date')
       const end = separator === 15 ? dayjs(start).endOf('month').format('YYYY-MM-DD') : dayjs(this.endDateForCurrentPeriod).add(14, 'day').format('YYYY-MM-DD');
-      return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() >= periodDate(start) && new Date(p['next_payment_date']).getTime() < periodDate(end)).sort(sortByDate)
+      return this.actualCredits.filter(p => new Date(p['next_payment_date']).getTime() >= periodDate(start) && new Date(p['next_payment_date']).getTime() <= periodDate(end)).sort(sortByDate)
     }
   }
 }
