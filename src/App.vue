@@ -1,6 +1,9 @@
 <template>
-    <Auth v-if="authRequire" />
-    <Credits :usdSellValue="usdSellValue" :loading="loading" :credits="credits" v-else />
+    <div>
+      <Auth v-if="authRequire" />
+      <Credits :usdSellValue="usdSellValue" :loading="loading" :credits="credits" v-else />
+    </div>
+
 </template>
 
 <script>
@@ -18,8 +21,10 @@ export default {
   },
   methods: {
     getCurrencies() {
+      const myHeaders = new Headers();
+      myHeaders.append("token", this.token);
       return new Promise ((resolve) => {
-        fetch('http://credit-api.test/currencies.php', {method: 'GET'}).then(
+        fetch('http://credit-api.test/currencies.php', {method: 'GET', headers: myHeaders}).then(
             r => r.json()
         ).then(r => {
           this.currencies = {...r};
@@ -57,7 +62,7 @@ export default {
   computed: {
     usdSellValue() {
       if (!this.currencies) return 0;
-      return Number(this.currencies?.['USD']?.['sell_value']) ?? 0
+      return Number(this.currencies?.['USD']?.['sell']) ?? 0
     },
     authRequire() {
       return this.token === null
@@ -68,9 +73,9 @@ export default {
   },
 
   async mounted() {
-    await this.getCurrencies();
     if (!this.authRequire) {
-      this.getMyCredits();
+      await this.getCurrencies();
+      await this.getMyCredits();
     }
   }
 }
